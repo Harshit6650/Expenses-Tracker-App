@@ -1,0 +1,35 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Sophisticated drop shadow for 3D depth and weight -->
+    <path
+        android:fillColor="#30000000"
+        android:pathData="M 36,44 L 72,44 C 75.3,44 78,46.7 78,50 L 78,74 C 78,77.3 75.3,80 72,80 L 36,80 C 32.7,80 30,77.3 30,74 L 30,50 C 30,46.7 32.7,44 36,44 Z" />
+    
+    <!-- Primary Wallet Body (Pure White Leather texture metaphor) -->
+    <path
+        android:fillColor="#F8F9FA"
+        android:pathData="M 34,42 L 70,42 C 73.3,42 76,44.7 76,48 L 76,72 C 76,75.3 73.3,78 70,78 L 34,78 C 30.7,78 28,75.3 28,72 L 28,48 C 28,44.7 30.7,42 34,42 Z" />
+    
+    <!-- Elegant golden-bronze folder clasp tab -->
+    <path
+        android:fillColor="#FFD54F"
+        android:pathData="M 58,51 C 58,48.8 59.8,47 62,47 L 76,47 L 76,65 L 62,65 C 59.8,65 58,63.2 58,61 Z" />
+        
+    <!-- Golden metallic coin seal inside locking clasp -->
+    <path
+        android:fillColor="#FFA000"
+        android:pathData="M 67,56 C 68.7,56 70,54.7 70,53 C 70,51.3 68.7,50 67,50 C 65.3,50 64,51.3 64,53 C 64,54.7 65.3,56 67,56 Z" />
+
+    <!-- Blue stylized trend bar or credit slot details -->
+    <path
+        android:fillColor="#1E88E5"
+        android:pathData="M 36,50 L 52,50 L 52,54 L 36,54 Z" />
+        
+    <path
+        android:fillColor="#00A86B"
+        android:pathData="M 36,58 L 48,58 L 48,62 L 36,62 Z" />
+</vector>
