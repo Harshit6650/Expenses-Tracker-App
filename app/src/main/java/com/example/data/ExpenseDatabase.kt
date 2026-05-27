@@ -19,7 +19,7 @@ abstract class ExpenseDatabase : RoomDatabase() {
                     context.applicationContext,
                     ExpenseDatabase::class.java,
                     "expense_tracker_db"
-                ).build()
+                ).fallbackToDestructiveMigration(dropAllTables = true).build()
                 INSTANCE = instance
                 instance
             }
