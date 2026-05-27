@@ -281,7 +281,7 @@ class ExpenseViewModel(
     }
 
     // Google Sign-In Authenticate Flow
-    fun loginWithGoogle(email: String, name: String) {
+    fun loginWithGoogle(email: String, name: String, photoUrl: String = "") {
         viewModelScope.launch {
             try {
                 _cloudSyncSyncing.value = true
@@ -299,6 +299,13 @@ class ExpenseViewModel(
                 _authToken.value = mockToken
                 _isUserLoggedIn.value = true
 
+                // Update standard profile states
+                _profileName.value = name
+                _profileEmail.value = email
+                if (photoUrl.isNotEmpty()) {
+                    _profilePhotoPath.value = photoUrl
+                }
+
                 sharedPreferences?.edit()?.apply {
                     putBoolean("is_logged_in", true)
                     putString("logged_in_uid", generatedUid)
@@ -307,6 +314,13 @@ class ExpenseViewModel(
                     putString("logged_in_name", name)
                     putString("logged_in_provider", "Google")
                     putString("logged_in_token", mockToken)
+                    
+                    // Sync into standard profile values
+                    putString("profile_name", name)
+                    putString("profile_email", email)
+                    if (photoUrl.isNotEmpty()) {
+                        putString("profile_photo_path", photoUrl)
+                    }
                     apply()
                 }
 

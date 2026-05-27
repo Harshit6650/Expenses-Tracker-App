@@ -7,6 +7,11 @@ import android.content.ContextWrapper
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import coil.compose.AsyncImage
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
@@ -4448,6 +4453,49 @@ fun AuthLandingScreen(
 
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+    val coroutineScope = rememberCoroutineScope()
+
+    // Configure Google Sign-In Client
+    val gso = remember {
+        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .requestProfile()
+            .build()
+    }
+    val googleSignInClient = remember(context, gso) {
+        GoogleSignIn.getClient(context, gso)
+    }
+
+    // Google Sign-In result launcher
+    val googleSignInLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+        try {
+            val account = task.getResult(ApiException::class.java)
+            val email = account?.email ?: ""
+            val displayName = account?.displayName ?: ""
+            val photoUrl = account?.photoUrl?.toString() ?: ""
+            
+            if (email.contains("@")) {
+                viewModel.loginWithGoogle(email, displayName, photoUrl)
+            } else {
+                android.widget.Toast.makeText(context, "Google Sign-In failed to retrieve email.", android.widget.Toast.LENGTH_SHORT).show()
+                authMode = 1
+            }
+        } catch (e: ApiException) {
+            e.printStackTrace()
+            val statusCode = e.statusCode
+            android.widget.Toast.makeText(
+                context, 
+                "Sign-In Error: standard client cancelled (code: $statusCode). Fallback to manual entry.", 
+                android.widget.Toast.LENGTH_LONG
+            ).show()
+            
+            // Auto open the manual Google credential entry panel on fallback!
+            authMode = 1
+        }
+    }
 
     LaunchedEffect(isUserLoggedIn) {
         if (isUserLoggedIn) {
@@ -4560,7 +4608,20 @@ fun AuthLandingScreen(
                         ) {
                             // High Fidelity Google Sign In Button
                             Card(
-                                onClick = { authMode = 1 },
+                                onClick = { 
+                                    try {
+                                        val signInIntent = googleSignInClient.signInIntent
+                                        googleSignInLauncher.launch(signInIntent)
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                        android.widget.Toast.makeText(
+                                            context,
+                                            "Google Sign-In failed to initialize. Fallback to manual entry.",
+                                            android.widget.Toast.LENGTH_SHORT
+                                        ).show()
+                                        authMode = 1
+                                    }
+                                },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(58.dp)
